@@ -14,7 +14,7 @@ export async function loader({
     return `site:${siteFormatted}`;
   });
 
-  const fetchUrl = `https://www.googleapis.com/customsearch/v1?key=AIzaSyD3ygwY3BSKKr6Axi32eSXMrYNMjAVJyfM&cx=b4644f3e113a54b01&q=${q} ${sitesQuery.join(' OR ')}`;
+  const fetchUrl = `https://www.googleapis.com/customsearch/v1?key=[YOUR_API_KEY]&cx=b4644f3e113a54b01&q=${q} ${sitesQuery.join(' OR ')}`;
   const res = await fetch(fetchUrl);
   const response = await res.json();
 
