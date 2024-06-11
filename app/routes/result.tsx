@@ -7,7 +7,7 @@ import { cacheClientLoader, createCacheAdapter, useCachedLoaderData } from "remi
 import CardResult from "~/components/CardResult";
 
 const fetchSearch = async (q: string | null, sitesQuery: string, start: number) => {
-  const fetchUrl = `https://www.googleapis.com/customsearch/v1?key=[YOUR_API_KEY]&cx=b4644f3e113a54b01&q=${q} ${sitesQuery}&start=${start}`;
+  const fetchUrl = `https://www.googleapis.com/customsearch/v1?key=AIzaSyD3ygwY3BSKKr6Axi32eSXMrYNMjAVJyfM&cx=b4644f3e113a54b01&q=${q} ${sitesQuery}&start=${start}`;
   const res = await fetch(fetchUrl);
   const response = await res.json();
 

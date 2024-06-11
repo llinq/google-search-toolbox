@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const meta: MetaFunction = () => {
   return [
     { charSet: 'utf-8' },
-    { title: 'New Remix App' },
+    { title: 'Google Search Tool' },
     { name: 'viewport', content: 'width=device-width, initial-scale=1' },
   ];
 };
