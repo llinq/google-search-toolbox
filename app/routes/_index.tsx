@@ -1,5 +1,5 @@
 import { Input } from "@chakra-ui/react";
-import type { MetaFunction } from "@remix-run/node";
+import { ActionFunction, redirect, type MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,8 +8,12 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader: ActionFunction = () => {
+  return redirect('/search');
+};
+
 export default function Index() {
   return (
-    <Input variant="filled" placeholder="Outline"  />
+    <Input variant="filled" placeholder="Outline" />
   );
 }

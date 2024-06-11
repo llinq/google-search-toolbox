@@ -1,11 +1,10 @@
 import { Container, Heading, Text, Stack, Image, CardBody, CardFooter, Button, Card, WrapItem, Wrap, Link, HStack, IconButton, ButtonGroup } from "@chakra-ui/react";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { ClientLoaderFunction, ClientLoaderFunctionArgs, redirect } from "@remix-run/react";
+import { ClientLoaderFunctionArgs } from "@remix-run/react";
 import { cacheClientLoader, createCacheAdapter, useCachedLoaderData } from "remix-client-cache";
 
 import mock from '../mock.json';
-import { CheckCircleIcon, CheckIcon, ExternalLinkIcon, MoonIcon, StarIcon, SunIcon } from "@chakra-ui/icons";
-import { c } from "node_modules/vite/dist/node/types.d-aGj9QkWt";
+import { CheckCircleIcon, CheckIcon, StarIcon } from "@chakra-ui/icons";
 
 // const { adapter } = createCacheAdapter(() => localStorage); // uses localStorage as the cache adapter
 
@@ -21,7 +20,7 @@ export async function loader({
     return `site:${siteFormatted}`;
   });
 
-  console.log(sitesQuery);
+  console.log(sitesQuery, q);
 
   // const fetchUrl = `https://www.googleapis.com/customsearch/v1?key=AIzaSyB9avZpj75uJSe89QbKbZaglxKhy31pDKY&cx=34d73736b5a9f473f&q=${q} ${sitesQuery.join(" OR ")}`;
   // const res = await fetch(fetchUrl);

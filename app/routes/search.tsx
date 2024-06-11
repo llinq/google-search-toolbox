@@ -17,13 +17,18 @@ import {
   Collapse,
   useDisclosure,
 } from '@chakra-ui/react'
-import { Form } from '@remix-run/react';
+import { Form, useNavigation } from '@remix-run/react';
 import { ArrowDownIcon, ArrowUpIcon, SearchIcon } from '@chakra-ui/icons'
 import { ChangeEvent, useState } from 'react';
 
 export default function SearchPage() {
   const { isOpen: isOpenSitesTextarea, onToggle: onToggleSitesTextArea } = useDisclosure()
   const [multipleSitesLength, setMultipleSitesLength] = useState(0);
+  const navigation = useNavigation();
+
+  const searching =
+    navigation.location &&
+    new URLSearchParams(navigation.location.search).has('q');
 
   const handleMultipleSitesChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = event.target.value
@@ -120,6 +125,7 @@ www.site3.com
                 width="200px"
                 colorScheme="blue"
                 type="submit"
+                isLoading={searching}
               >
                 Search
               </Button>
