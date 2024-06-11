@@ -1,7 +1,8 @@
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { ChatIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, IconButton, useColorMode } from "@chakra-ui/react";
 import SearchInput from "./SearchInput";
 import { Form, useLocation } from "@remix-run/react";
+import Logo from "./Logo";
 
 export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -17,15 +18,24 @@ export default function Header() {
         alignItems="start"
         justifyContent="space-between"
         padding="16px"
-        gap={20}
+        gap={{ base: "2rem" }}
       // borderBottom="1px solid"
       // borderBottomColor="orange.600"
       // bgGradient="linear(orange.600, blue.400)"
       >
         <Form action="/search">
-          <Button variant="outline" type="submit">
-            Logo
-          </Button>
+          <Box display={{ base: "block", sm: "none" }}>
+            <IconButton
+              aria-label="Back to home"
+              icon={<ChatIcon />}
+              type="submit"
+            />
+          </Box>
+          <Box display={{ base: "none", sm: "block" }}>
+            <Button type="submit" variant="ghost" width="80px">
+              <Logo size="xs" as="span" fontSize="8px" lineHeight="10px" />
+            </Button>
+          </Box>
         </Form>
         {isResultPage && (
           <Box w="full">
