@@ -1,12 +1,18 @@
-import { Container, Heading, Text, Stack, Image, CardBody, CardFooter, Button, Card, WrapItem, Wrap, Link, HStack, IconButton, ButtonGroup } from "@chakra-ui/react";
+import { Container, Heading, WrapItem, Wrap, TabPanel, TabPanels, TabList, Tab, Tabs } from "@chakra-ui/react";
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { ClientLoaderFunctionArgs } from "@remix-run/react";
 import { cacheClientLoader, createCacheAdapter, useCachedLoaderData } from "remix-client-cache";
 
-import mock from '../mock.json';
-import { CheckCircleIcon, CheckIcon, StarIcon } from "@chakra-ui/icons";
+// import mock from '../mock.json';
+import CardResult from "~/components/CardResult";
 
-// const { adapter } = createCacheAdapter(() => localStorage); // uses localStorage as the cache adapter
+const fetchSearch = async (q: string | null, sitesQuery: string, start: number) => {
+  const fetchUrl = `https://www.googleapis.com/customsearch/v1?key=[YOUR_API_KEY]&cx=b4644f3e113a54b01&q=${q} ${sitesQuery}&start=${start}`;
+  const res = await fetch(fetchUrl);
+  const response = await res.json();
+
+  return response;
+};
 
 export async function loader({
   request
@@ -20,16 +26,14 @@ export async function loader({
     return `site:${siteFormatted}`;
   });
 
-  console.log(sitesQuery, q);
+  const items = [];
 
-  // `https://www.googleapis.com/customsearch/v1?key=[YOUR_API_KEY]&cx=b4644f3e113a54b01&q=${q} ${sitesQuery.join(' OR ')}`;
-  // const res = await fetch(fetchUrl);
-  // const response = await res.json();
-  const response = mock;
+  for (let start = 0; start <= 90; start += 10) {
+    const response = await fetchSearch(q, sitesQuery.join(" OR "), start);
+    items.push(...response.items);
+  }
 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-
-  return json({ items: response.items });
+  return json({ items, sites: sitesFormatted });
 }
 
 const { adapter } = createCacheAdapter(() => localStorage); // uses localStorage as the cache adapter
@@ -42,81 +46,50 @@ export const clientLoader = (args: ClientLoaderFunctionArgs) => cacheClientLoade
 clientLoader.hydrate = true;
 
 export default function ResultPage() {
-  const { items } = useCachedLoaderData<typeof loader>();
+  const { items, sites } = useCachedLoaderData<typeof loader>();
 
   return (
     <Container
       minHeight="100vh"
       marginBottom="20px"
+      maxWidth="full"
+      w="full"
     >
       <Heading marginBottom="24px">
         Result Page!!
       </Heading>
-      <Wrap w="full">
-        {items?.map((item: any, index: number) => (
-          <WrapItem key={index}>
-            <Card
-              direction={{ base: 'column', sm: 'row' }}
-              variant="outline"
-              padding="8px"
-              w="full"
-            >
-              <Image
-                objectFit='cover'
-                maxW={{ base: '100%', sm: '200px' }}
-                borderRadius="lg"
-                src={item.pagemap.metatags[0]["og:image"]}
-              />
 
-              <Stack>
-                <CardBody w="300px">
-                  <Heading size="md" dangerouslySetInnerHTML={{ __html: item.htmlTitle }} noOfLines={2} title={item.title} marginBottom="8px" />
-                  <Link href={item.link} isExternal _visited={{ color: 'purple.300' }} color="blue.300">
-                    {item.link}
-                  </Link>
-                  <Text dangerouslySetInnerHTML={{ __html: item.htmlSnippet }} noOfLines={3} paddingTop="8px" />
-                </CardBody>
+      {sites && sites.length > 0 ? (
+        <Tabs variant='enclosed'>
+          <TabList>
+            {sites.map((site) => (
+              <Tab key={site}>{site}</Tab>
+            ))}
+          </TabList>
+          <TabPanels>
+            {sites.map((site) => (
+              <TabPanel key={site}>
+                <Wrap w="full">
+                  {items?.filter?.(item => item.link.includes(site)).map((item: any, index: number) => (
+                    <WrapItem key={index}>
+                      <CardResult item={item} index={index} />
+                    </WrapItem>
+                  ))}
+                </Wrap>
+              </TabPanel>
+            ))}
+          </TabPanels>
+        </Tabs>
+      ) : (
+        <Wrap w="full">
+          {items.map((item: any, index: number) => (
+            <WrapItem key={index}>
+              <CardResult item={item} index={index} />
+            </WrapItem>
+          ))}
+        </Wrap>
+      )}
 
-                <CardFooter>
-                  <HStack justifyContent="space-between" w="full">
-                    <Button
-                      colorScheme="orange"
-                      onClick={() => {
-                        window.open(item.link, '_blank');
-                      }}
-                    >
-                      Go
-                    </Button>
-                    <ButtonGroup>
-                      <IconButton
-                        isRound={true}
-                        variant="ghost"
-                        colorScheme="cyan"
-                        aria-label="Change theme"
-                        icon={<CheckIcon />}
-                      />
-                      <IconButton
-                        isRound={true}
-                        variant="ghost"
-                        colorScheme="green"
-                        aria-label="Change theme"
-                        icon={<CheckCircleIcon />}
-                      />
-                      <IconButton
-                        isRound={true}
-                        variant="ghost"
-                        colorScheme="yellow"
-                        aria-label="Change theme"
-                        icon={<StarIcon fillOpacity={10} color={index === 0 ? 'orange' : 'gray'} />}
-                      />
-                    </ButtonGroup>
-                  </HStack>
-                </CardFooter>
-              </Stack>
-            </Card>
-          </WrapItem>
-        ))}
-      </Wrap>
     </Container>
   );
 }

@@ -16,6 +16,7 @@ import {
   FormHelperText,
   Collapse,
   useDisclosure,
+  Highlight,
 } from '@chakra-ui/react'
 import { Form, useNavigation } from '@remix-run/react';
 import { ArrowDownIcon, ArrowUpIcon, SearchIcon } from '@chakra-ui/icons'
@@ -41,12 +42,20 @@ export default function SearchPage() {
 
   return (
     <Container
-      minHeight="100vh"
+      minHeight="90vh"
     >
       <AbsoluteCenter>
         <Box w="576px">
           <Heading as="h1" size="4xl" marginBottom="44px" textAlign="center">
             Google
+            <br />
+            <Highlight query="Search" styles={{ color: "blue.600" }}>
+              Search
+            </Highlight>
+            <br />
+            <Highlight query="Tool" styles={{ color: "orange.600" }}>
+              Tool
+            </Highlight>
           </Heading>
           <Form role="search" id="search-form" action="/result">
             <VStack gap="16px">
@@ -63,25 +72,6 @@ export default function SearchPage() {
                     icon={isOpenSitesTextarea ? <ArrowUpIcon /> : <ArrowDownIcon />}
                     onClick={onToggleSitesTextArea}
                   />
-                  {/* <Menu>
-                    <MenuButton
-                      as={IconButton}
-                      aria-label='Options'
-                      icon={<SettingsIcon />}
-                      variant=''
-                    />
-                    <MenuList>
-                      <MenuItem
-                        icon={<HamburgerIcon />}
-                        onClick={() => setMultipleSearch(true)}
-                      >
-                        Search on multiple sites
-                      </MenuItem>
-                      <MenuItem icon={<EditIcon />}>
-                        Open File...
-                      </MenuItem>
-                    </MenuList>
-                  </Menu> */}
                 </InputRightElement>
                 <Input
                   placeholder="Search here..."
