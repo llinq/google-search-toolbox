@@ -22,7 +22,7 @@ export async function loader({
 
   console.log(sitesQuery, q);
 
-  // const fetchUrl = `https://www.googleapis.com/customsearch/v1?key=AIzaSyB9avZpj75uJSe89QbKbZaglxKhy31pDKY&cx=34d73736b5a9f473f&q=${q} ${sitesQuery.join(" OR ")}`;
+  // `https://www.googleapis.com/customsearch/v1?key=[YOUR_API_KEY]&cx=b4644f3e113a54b01&q=${q} ${sitesQuery.join(' OR ')}`;
   // const res = await fetch(fetchUrl);
   // const response = await res.json();
   const response = mock;
