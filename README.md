@@ -1,8 +1,4 @@
-# Welcome to Remix!
-
-- 📖 [Remix docs](https://remix.run/docs)
-
-## Tools
+# Welcome to Google Search Toolbox!
 
 This project use:
 - [Remix](https://remix.run/docs)
