@@ -33,7 +33,7 @@ export default function Header() {
           </Box>
           <Box display={{ base: "none", sm: "block" }}>
             <Button type="submit" variant="ghost" width="80px">
-              <Logo size="xs" as="span" fontSize="8px" lineHeight="10px" />
+              <Logo size="xs" as="span" fontSize="10px" lineHeight="12px" />
             </Button>
           </Box>
         </Form>

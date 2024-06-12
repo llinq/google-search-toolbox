@@ -1,12 +1,17 @@
 import { CheckCircleIcon, CheckIcon, StarIcon } from "@chakra-ui/icons";
 import { Card, Image, Stack, CardBody, Heading, Link, Text, CardFooter, HStack, Button, ButtonGroup, IconButton } from "@chakra-ui/react";
+import { useFetcher } from "@remix-run/react";
+import { action } from "~/routes/result.favorite";
 
 type CardResultProps = {
   item: any;
-  index: number;
 };
 
-export default function CardResult({ item, index }: CardResultProps) {
+export default function CardResult({ item }: CardResultProps) {
+  const fetcher = useFetcher<typeof action>();
+
+  const favorite = fetcher.data?.favorite ?? item.favorite;
+
   return (
     <Card
       direction={{ base: 'column', sm: 'row' }}
@@ -57,13 +62,17 @@ export default function CardResult({ item, index }: CardResultProps) {
                 aria-label="Change theme"
                 icon={<CheckCircleIcon />}
               />
-              <IconButton
-                isRound={true}
-                variant="ghost"
-                colorScheme="yellow"
-                aria-label="Change theme"
-                icon={<StarIcon fillOpacity={10} color={index === 0 ? 'orange' : 'gray'} />}
-              />
+              <fetcher.Form action="/result/favorite" method="POST">
+                <input type="hidden" name="link" value={item.link} hidden={true} />
+                <IconButton
+                  isRound={true}
+                  variant="ghost"
+                  colorScheme="yellow"
+                  aria-label="Change theme"
+                  icon={<StarIcon fillOpacity={10} color={favorite ? 'orange' : 'gray'} />}
+                  type="submit"
+                />
+              </fetcher.Form>
             </ButtonGroup>
           </HStack>
         </CardFooter>
