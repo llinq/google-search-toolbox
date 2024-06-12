@@ -2,6 +2,13 @@
 
 - 📖 [Remix docs](https://remix.run/docs)
 
+## Tools
+
+This project use:
+- [Remix](https://remix.run/docs)
+- [ChakraUI](https://v2.chakra-ui.com/getting-started)
+- [Google Programmable Search Engine](https://developers.google.com/custom-search/v1/overview?hl=pt-br)
+
 ## Development
 
 Run the dev server:
