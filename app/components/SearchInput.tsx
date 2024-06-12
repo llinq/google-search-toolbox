@@ -5,11 +5,14 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
   IconButton,
   Input,
   InputGroup,
+  InputLeftAddon,
   InputLeftElement,
   InputRightElement,
+  Text,
   Textarea,
   VStack,
   useDisclosure,
@@ -17,6 +20,7 @@ import {
 import { ArrowDownIcon, ArrowUpIcon, SearchIcon } from "@chakra-ui/icons";
 import { Form, useLocation, useNavigation } from "@remix-run/react";
 import { ChangeEvent, useState } from "react";
+import { SingleDatepicker } from "chakra-dayzed-datepicker";
 
 type SearchInputProps = {
   hideButton?: boolean;
@@ -38,6 +42,7 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
   const [multipleSitesLength, setMultipleSitesLength] = useState(0);
   const [queryValue, setQueryValue] = useState(q || "");
   const [sitesValue, setSitesValue] = useState(sites ?? "");
+  const [date, setDate] = useState(new Date());
 
   const handleMultipleSitesChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = event.target.value;
@@ -83,9 +88,40 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
         </InputGroup>
 
         <Box as={Collapse} in={isOpenSitesTextarea} w="full" animateOpacity>
+          <HStack alignItems="center" marginBottom="16px">
+            <FormLabel>
+              Results after
+            </FormLabel>
+            <SingleDatepicker
+              name="date-input"
+              date={date}
+              onDateChange={setDate}
+              propsConfigs={{
+                triggerBtnProps: {
+                  borderColor: "var(--chakra-colors-chakra-border-color)",
+                  color: "var(--chakra-colors-chakra-body-text)",
+                },
+                dayOfMonthBtnProps: {
+                  selectedBtnProps: {
+                    backgroundColor: "orange.600",
+                    // border: "1px solid",
+                    // borderColor: "orange.600"
+                  },
+                  defaultBtnProps: {
+                    border: "1px solid",
+                    borderColor: "transparent",
+                    _hover: {
+                      backgroundColor: "transparent",
+                      borderColor: "orange.600",
+                    }
+                  },
+                }
+              }}
+            />
+          </HStack>
           <FormControl variant="outline" w="full">
             <FormLabel>
-              Multiple search tool
+              Sites
             </FormLabel>
             <Textarea
               name="sites"
@@ -123,6 +159,6 @@ www.site3.com
           </Button>
         )}
       </VStack>
-    </Form>
+    </Form >
   );
 }

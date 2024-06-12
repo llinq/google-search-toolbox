@@ -90,7 +90,7 @@ export default function ResultPage() {
           <TabPanels>
             {sites.map((site) => (
               <TabPanel key={site}>
-                <Wrap w="full">
+                <Wrap w="full" justify="center" spacing="24px">
                   {items?.filter?.(item => item.link.includes(site)).map((item: any, index: number) => (
                     <WrapItem key={index}>
                       <CardResult item={item} />
@@ -102,7 +102,7 @@ export default function ResultPage() {
           </TabPanels>
         </Tabs>
       ) : (
-        <Wrap w="full">
+        <Wrap w="full" justify="center" spacing="24px">
           {items.map((item: any, index: number) => (
             <WrapItem key={index}>
               <CardResult item={item} />

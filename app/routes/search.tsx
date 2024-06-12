@@ -6,9 +6,10 @@ export default function SearchPage() {
   return (
     <Container
       minHeight="90vh"
+      width="full"
     >
-      <AbsoluteCenter>
-        <Box w="576px">
+      <AbsoluteCenter w={{ base: "full", md: "unset" }} paddingX="16px">
+        <Box w={{ base: "full", md: "576px" }}>
           <Logo />
           <Spacer marginBottom="44px" />
           <SearchInput />
