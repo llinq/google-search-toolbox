@@ -7,8 +7,17 @@ import mock from '../mock.json';
 import CardResult from "~/components/CardResult";
 import { userPrefs } from "~/cookies.server";
 
-const fetchSearch = async (q: string | null, sitesQuery: string, start: number) => {
-  const fetchUrl = `https://www.googleapis.com/customsearch/v1?key=[YOUR_API_KEY]&cx=b4644f3e113a54b01&q=${q} ${sitesQuery}&start=${start}`;
+export type FetchSearchParams = {
+  after: string | null;
+  q: string | null;
+  sites: string;
+  start: number;
+};
+
+const fetchSearch = async (params: FetchSearchParams) => {
+  const fetchUrl = 
+  `https://www.googleapis.com/customsearch/v1?key=[YOUR_API_KEY]&cx=b4644f3e113a54b01&q=${params.q} ${params.sites} ${params.after} &start=${params.start}`;
+  
   const res = await fetch(fetchUrl);
   const response = await res.json();
 
@@ -27,20 +36,22 @@ export async function loader({
   const favoritesInCookies = await loadFavoritesInCookies(request);
 
   const url = new URL(request.url);
-  const q = url.searchParams.get("q");
+  const qParam = url.searchParams.get("q");
+  const sitesParam = url.searchParams.get("sites");
+  const afterParam = url.searchParams.get("after");
 
-  const sites = url.searchParams.get("sites");
-  const sitesFormatted = sites?.match(/[^\r\n]+/gm) ?? [];
+  const sitesFormatted = sitesParam?.match(/[^\r\n]+/gm) ?? [];
   const sitesQuery = sitesFormatted.map((siteFormatted) => {
     return `site:${siteFormatted}`;
   });
+  const afterQuery = afterParam ? `after:${afterParam}` : "";
 
   const items = mock;
 
   // const items = [];
 
   // for (let start = 0; start <= 90; start += 10) {
-  //   const response = await fetchSearch(q, sitesQuery.join(" OR "), start);
+  //   const response = await fetchSearch(qParam, sitesQuery.join(" OR "), start, afterQuery);
   //   items.push(...response.items);
   // }
 

@@ -9,10 +9,8 @@ import {
   IconButton,
   Input,
   InputGroup,
-  InputLeftAddon,
   InputLeftElement,
   InputRightElement,
-  Text,
   Textarea,
   VStack,
   useDisclosure,
@@ -20,7 +18,8 @@ import {
 import { ArrowDownIcon, ArrowUpIcon, SearchIcon } from "@chakra-ui/icons";
 import { Form, useLocation, useNavigation } from "@remix-run/react";
 import { ChangeEvent, useState } from "react";
-import { SingleDatepicker } from "chakra-dayzed-datepicker";
+import DatePicker from "./DatePicker";
+import moment from "moment";
 
 type SearchInputProps = {
   hideButton?: boolean;
@@ -29,9 +28,11 @@ type SearchInputProps = {
 
 export default function SearchInput({ hideButton, isResultPage }: SearchInputProps) {
   const location = useLocation();
+  
   const searchParams = new URLSearchParams(location.search);
-  const q = searchParams.get('q');
-  const sites = searchParams.get('sites');
+  const qParam = searchParams.get("q");
+  const sitesParam = searchParams.get("sites");
+  const afterParam = searchParams.get("after");
 
   const navigation = useNavigation();
   const searching =
@@ -40,9 +41,9 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
 
   const { isOpen: isOpenSitesTextarea, onToggle: onToggleSitesTextArea } = useDisclosure();
   const [multipleSitesLength, setMultipleSitesLength] = useState(0);
-  const [queryValue, setQueryValue] = useState(q || "");
-  const [sitesValue, setSitesValue] = useState(sites ?? "");
-  const [date, setDate] = useState(new Date());
+  const [queryValue, setQueryValue] = useState(qParam || "");
+  const [sitesValue, setSitesValue] = useState(sitesParam ?? "");
+  const [date, setDate] = useState<Date | undefined>(afterParam ? moment(afterParam).toDate() : undefined);
 
   const handleMultipleSitesChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = event.target.value;
@@ -92,32 +93,7 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
             <FormLabel>
               Results after
             </FormLabel>
-            <SingleDatepicker
-              name="date-input"
-              date={date}
-              onDateChange={setDate}
-              propsConfigs={{
-                triggerBtnProps: {
-                  borderColor: "var(--chakra-colors-chakra-border-color)",
-                  color: "var(--chakra-colors-chakra-body-text)",
-                },
-                dayOfMonthBtnProps: {
-                  selectedBtnProps: {
-                    backgroundColor: "orange.600",
-                    // border: "1px solid",
-                    // borderColor: "orange.600"
-                  },
-                  defaultBtnProps: {
-                    border: "1px solid",
-                    borderColor: "transparent",
-                    _hover: {
-                      backgroundColor: "transparent",
-                      borderColor: "orange.600",
-                    }
-                  },
-                }
-              }}
-            />
+            <DatePicker name="after" date={date} onDateChange={setDate} />
           </HStack>
           <FormControl variant="outline" w="full">
             <FormLabel>

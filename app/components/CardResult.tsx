@@ -1,5 +1,15 @@
-import { CheckCircleIcon, CheckIcon } from "@chakra-ui/icons";
-import { Card, Image, Stack, CardBody, Heading, Link, Text, CardFooter, HStack, Button, ButtonGroup, IconButton } from "@chakra-ui/react";
+import {
+  Card,
+  Stack,
+  CardBody,
+  Heading,
+  Link,
+  Text,
+  CardFooter,
+  HStack,
+  Button,
+  ButtonGroup,
+} from "@chakra-ui/react";
 import FavoriteButton from "./FavoriteButton";
 
 type CardResultProps = {
@@ -46,20 +56,6 @@ export default function CardResult({ item }: CardResultProps) {
               Go
             </Button>
             <ButtonGroup>
-              {/* <IconButton
-                isRound={true}
-                variant="ghost"
-                colorScheme="cyan"
-                aria-label="Change theme"
-                icon={<CheckIcon />}
-              />
-              <IconButton
-                isRound={true}
-                variant="ghost"
-                colorScheme="green"
-                aria-label="Change theme"
-                icon={<CheckCircleIcon />}
-              /> */}
               <FavoriteButton item={item} />
             </ButtonGroup>
           </HStack>
