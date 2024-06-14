@@ -1,5 +1,5 @@
 import { Container, Heading, WrapItem, Wrap, TabPanel, TabPanels, TabList, Tab, Tabs } from "@chakra-ui/react";
-import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { LoaderFunctionArgs, json } from "@remix-run/cloudflare";
 import { ClientLoaderFunctionArgs, ShouldRevalidateFunctionArgs } from "@remix-run/react";
 import { cacheClientLoader, useCachedLoaderData } from "remix-client-cache";
 

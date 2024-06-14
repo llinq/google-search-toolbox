@@ -8,7 +8,10 @@
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
-    "typecheck": "tsc"
+    "preview": "npm run build && wrangler pages dev",
+    "typecheck": "tsc",
+    "cf-typegen": "wrangler types"
+
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -16,6 +19,8 @@
     "@emotion/react": "^11.11.4",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.5",
+    "@remix-run/cloudflare": "^2.9.2",
+    "@remix-run/cloudflare-pages": "^2.9.2",
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
@@ -31,6 +36,7 @@
     "remix-client-cache": "^1.0.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240605.0",
     "@remix-run/dev": "^2.9.2",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
@@ -44,7 +50,8 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "typescript": "^5.1.6",
     "vite": "^5.1.0",
-    "vite-tsconfig-paths": "^4.2.1"
+    "vite-tsconfig-paths": "^4.2.1",
+    "wrangler": "^3.60.3"
   },
   "engines": {
     "node": ">=20.0.0"

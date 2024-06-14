@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, json } from "@remix-run/node";
+import { ActionFunctionArgs, json } from "@remix-run/cloudflare";
 import { userPrefs } from "~/cookies.server";
 
 export const action = async ({

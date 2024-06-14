@@ -10,7 +10,7 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from '@remix-run/react'
-import { MetaFunction, LinksFunction, LoaderFunction } from '@remix-run/node' // Depends on the runtime you choose
+import { MetaFunction, LinksFunction, LoaderFunction } from '@remix-run/cloudflare' // Depends on the runtime you choose
 
 import { ServerStyleContext, ClientStyleContext } from './context'
 import Header from './components/Header'

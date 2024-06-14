@@ -1,5 +1,5 @@
 import { Input } from "@chakra-ui/react";
-import { ActionFunction, redirect, type MetaFunction } from "@remix-run/node";
+import { ActionFunction, redirect, type MetaFunction } from "@remix-run/cloudflare";
 
 export const meta: MetaFunction = () => {
   return [
