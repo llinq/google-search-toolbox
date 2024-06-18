@@ -39,7 +39,7 @@ export default function Header() {
         </Form>
         {isResultPage && (
           <Box w="full">
-            <SearchInput hideButton={true} isResultPage={isResultPage} />
+            <SearchInput isResultPage={isResultPage} />
           </Box>
         )}
         <div>
