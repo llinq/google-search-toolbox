@@ -15,4 +15,4 @@ worker-configuration.d.ts
 /playwright-report
 
 # Remix stacks
-/package-lock.json
+# /package-lock.json
