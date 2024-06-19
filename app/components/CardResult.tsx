@@ -24,8 +24,8 @@ export default function CardResult({ item }: CardResultProps) {
       padding="8px"
       w="full"
       maxWidth="318px"
-      h="330px"
-      maxHeight="330px"
+      h="400px"
+      maxHeight="400px"
     >
       {/* {item.pagemap?.metatags?.length > 0 && (
         <Image
@@ -42,7 +42,7 @@ export default function CardResult({ item }: CardResultProps) {
           <Link href={item.link} isExternal _visited={{ color: 'purple.300' }} color="blue.300" noOfLines={2}>
             {item.link}
           </Link>
-          <Text dangerouslySetInnerHTML={{ __html: item.htmlSnippet }} noOfLines={3} paddingTop="8px" />
+          <Text dangerouslySetInnerHTML={{ __html: item.htmlSnippet }} noOfLines={6} paddingTop="8px" />
         </CardBody>
 
         <CardFooter>

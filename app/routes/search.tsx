@@ -22,7 +22,7 @@ export default function SearchPage() {
 
   return (
     <Container
-      minHeight="90vh"
+      height="full"
       width="full"
     >
       <AbsoluteCenter w={{ base: "full", md: "unset" }} paddingX="16px">

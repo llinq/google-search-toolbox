@@ -14,6 +14,7 @@ import { MetaFunction, LinksFunction, LoaderFunction } from '@remix-run/cloudfla
 
 import { ServerStyleContext, ClientStyleContext } from './context'
 import Header from './components/Header'
+import styles from './styles/styles.css?url';
 
 export const loader: LoaderFunction = async ({ request }) => {
   return request.headers.get('cookie') ?? '';
@@ -35,6 +36,10 @@ export const links: LinksFunction = () => {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap'
     },
+    {
+      rel: 'stylesheet',
+      href: styles
+    }
   ]
 }
 
@@ -140,7 +145,9 @@ export default function App() {
         theme={theme}
       >
         <Header />
-        <Outlet />
+        <div className="body-content">
+          <Outlet />
+        </div>
       </ChakraProvider>
     </Document>
   )

@@ -2,23 +2,43 @@ import { Container, Heading, WrapItem, Wrap, TabPanel, TabPanels, TabList, Tab, 
 import { LoaderFunctionArgs, json } from "@remix-run/cloudflare";
 import { ClientLoaderFunctionArgs, ShouldRevalidateFunctionArgs } from "@remix-run/react";
 import { cacheClientLoader, useCachedLoaderData } from "remix-client-cache";
+import invariant from "tiny-invariant";
 
 import mock from '../mock.json';
 import CardResult from "~/components/CardResult";
 import { userPrefs } from "~/cookies.server";
+import { GOOGLE_API_URL } from "~/constants/google-api";
+import { formatSites } from "~/utils/formatSites";
 
 export type FetchSearchParams = {
   after: string | null;
   q: string | null;
   sites: string;
   start: number;
+  excludeTerms: string;
 };
 
 const fetchSearch = async (params: FetchSearchParams) => {
-  const fetchUrl = 
-  `https://www.googleapis.com/customsearch/v1?key=[YOUR_API_KEY]&cx=b4644f3e113a54b01&q=${params.q} ${params.sites} ${params.after} &start=${params.start}`;
-  
-  const res = await fetch(fetchUrl);
+  invariant(params.q, "Search parameter is required") 
+
+  const fetchUrl = GOOGLE_API_URL;
+
+  const qParamSplited = params.q.split(' ');
+
+  const urlSearchParams = new URLSearchParams({
+    // "key": "AIzaSyB9avZpj75uJSe89QbKbZaglxKhy31pDKY",
+    // "key": "AIzaSyC6kDE2BqlmZXa-PhEe2YHjAyQwRmEZvzw",
+    "key": "AIzaSyD3ygwY3BSKKr6Axi32eSXMrYNMjAVJyfM",
+    "cx": "b4644f3e113a54b01",
+    "q": `${params.q} ${params.sites}`,
+    "excludeTerms": params.excludeTerms,
+    "exactTerms": `${qParamSplited[qParamSplited?.length- 1]}`,
+    "start": params.start.toString(),
+  });
+
+  const url = `${fetchUrl}?${urlSearchParams}`;
+
+  const res = await fetch(url);
   const response = await res.json();
 
   return response;
@@ -39,19 +59,31 @@ export async function loader({
   const qParam = url.searchParams.get("q");
   const sitesParam = url.searchParams.get("sites");
   const afterParam = url.searchParams.get("after");
+  const excludeTerms = url.searchParams.get("excludeTerms");
 
-  const sitesFormatted = sitesParam?.match(/[^\r\n]+/gm) ?? [];
+  const sitesFormatted = formatSites(sitesParam ?? "");
   const sitesQuery = sitesFormatted.map((siteFormatted) => {
     return `site:${siteFormatted}`;
   });
   const afterQuery = afterParam ? `after:${afterParam}` : "";
 
-  const items = mock;
+  // const items = mock;
 
-  // const items = [];
+  const items = [];
+
+  const params: FetchSearchParams = {
+    after: afterQuery,
+    q: qParam,
+    sites: sitesQuery.join(" OR "),
+    start: 0,
+    excludeTerms: excludeTerms ?? ""
+  };
+
+  const response = await fetchSearch({ ...params, start: 0 });
+  items.push(...response.items);
 
   // for (let start = 0; start <= 90; start += 10) {
-  //   const response = await fetchSearch(qParam, sitesQuery.join(" OR "), start, afterQuery);
+  //   const response = await fetchSearch({ ...params, start });
   //   items.push(...response.items);
   // }
 
@@ -81,6 +113,8 @@ export function shouldRevalidate({
 export default function ResultPage() {
   const { items, sites } = useCachedLoaderData<typeof loader>();
 
+  const sitesWithLink = sites.filter((s) => !!items.find((i) => i.link.includes(s)));
+
   return (
     <Container
       minHeight="100vh"
@@ -94,12 +128,12 @@ export default function ResultPage() {
       {sites && sites.length > 0 ? (
         <Tabs variant='enclosed'>
           <TabList>
-            {sites.map((site) => (
+            {sitesWithLink.map((site) => (
               <Tab key={site}>{site}</Tab>
             ))}
           </TabList>
           <TabPanels>
-            {sites.map((site) => (
+            {sitesWithLink.map((site) => (
               <TabPanel key={site}>
                 <Wrap w="full" justify="center" spacing="24px">
                   {items?.filter?.(item => item.link.includes(site)).map((item: any, index: number) => (
