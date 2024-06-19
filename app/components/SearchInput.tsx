@@ -3,6 +3,7 @@ import {
   Button,
   Collapse,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   FormLabel,
   HStack,
@@ -101,7 +102,8 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
             </FormLabel>
             <DatePicker name="after" date={date} onDateChange={setDate} />
           </HStack>
-          <FormControl variant="outline" w="full" marginBottom="16px">
+
+          <FormControl variant="outline" w="full" marginBottom="16px" isInvalid={multipleSitesLength > 25}>
             <FormLabel>
               Sites
             </FormLabel>
@@ -109,10 +111,10 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
               name="sites"
               id="sites"
               resize="none"
-              value={sitesValue}
-              onChange={handleMultipleSitesChange}
               size="sm"
               rows={10}
+              value={sitesValue}
+              onChange={handleMultipleSitesChange}
               placeholder="Split sites with break lines, e.g.:
 
 www.site1.com
@@ -120,13 +122,17 @@ www.site2.com
 www.site3.com
             "
             />
-            {multipleSitesLength > 0 && (
+            {multipleSitesLength <= 25 ? (
               <FormHelperText>
                 Searching on {multipleSitesLength} sites
               </FormHelperText>
+            ) : (
+              <FormErrorMessage>
+                Maximum quantity of sites allowed is 25
+              </FormErrorMessage>
             )}
           </FormControl>
-          <FormControl variant="outline" w="full" >
+          <FormControl variant="outline" w="full">
             <FormLabel>
               Exclude filter
             </FormLabel>

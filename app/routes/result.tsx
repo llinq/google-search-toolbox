@@ -2,11 +2,13 @@ import { Container, Heading, WrapItem, Wrap, TabPanel, TabPanels, TabList, Tab, 
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { ClientLoaderFunctionArgs, ShouldRevalidateFunctionArgs } from "@remix-run/react";
 import { cacheClientLoader, useCachedLoaderData } from "remix-client-cache";
+import invariant from "tiny-invariant";
 
 import mock from '../mock.json';
 import CardResult from "~/components/CardResult";
 import { userPrefs } from "~/cookies.server";
 import { GOOGLE_API_URL } from "~/constants/google-api";
+import { formatSites } from "~/utils/formatSites";
 
 export type FetchSearchParams = {
   after: string | null;
@@ -17,14 +19,20 @@ export type FetchSearchParams = {
 };
 
 const fetchSearch = async (params: FetchSearchParams) => {
+  invariant(params.q, "Search parameter is required") 
+
   const fetchUrl = GOOGLE_API_URL;
+
+  const qParamSplited = params.q.split(' ');
 
   const urlSearchParams = new URLSearchParams({
     // "key": "AIzaSyB9avZpj75uJSe89QbKbZaglxKhy31pDKY",
-    "key": "AIzaSyC6kDE2BqlmZXa-PhEe2YHjAyQwRmEZvzw",
+    // "key": "AIzaSyC6kDE2BqlmZXa-PhEe2YHjAyQwRmEZvzw",
+    "key": "AIzaSyD3ygwY3BSKKr6Axi32eSXMrYNMjAVJyfM",
     "cx": "b4644f3e113a54b01",
-    "excludeTerms": params.excludeTerms,
     "q": `${params.q} ${params.sites}`,
+    "excludeTerms": params.excludeTerms,
+    "exactTerms": `${qParamSplited[qParamSplited?.length- 1]}`,
     "start": params.start.toString(),
   });
 
@@ -32,9 +40,6 @@ const fetchSearch = async (params: FetchSearchParams) => {
 
   const res = await fetch(url);
   const response = await res.json();
-
-  console.log(url);
-  console.log(response);
 
   return response;
 };
@@ -56,7 +61,7 @@ export async function loader({
   const afterParam = url.searchParams.get("after");
   const excludeTerms = url.searchParams.get("excludeTerms");
 
-  const sitesFormatted = sitesParam?.match(/[^\r\n]+/gm) ?? [];
+  const sitesFormatted = formatSites(sitesParam ?? "");
   const sitesQuery = sitesFormatted.map((siteFormatted) => {
     return `site:${siteFormatted}`;
   });
@@ -107,8 +112,6 @@ export function shouldRevalidate({
 
 export default function ResultPage() {
   const { items, sites } = useCachedLoaderData<typeof loader>();
-
-  // console.log(JSON.stringify(items));
 
   const sitesWithLink = sites.filter((s) => !!items.find((i) => i.link.includes(s)));
 

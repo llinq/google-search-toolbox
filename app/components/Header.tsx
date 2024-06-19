@@ -1,5 +1,5 @@
 import { ChatIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { Box, Button, Flex, IconButton, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, Progress, Stack, Text, useColorMode } from "@chakra-ui/react";
 import SearchInput from "./SearchInput";
 import { Form, useLocation } from "@remix-run/react";
 import Logo from "./Logo";
@@ -53,6 +53,12 @@ export default function Header() {
           />
         </div>
       </Flex>
+      <Stack spacing={1} margin="24px">
+        <Progress  colorScheme="yellow" value={20} size="xs" />
+        <Text as="i">
+          Quota limit
+        </Text>
+      </Stack>
     </header>
   )
 }
