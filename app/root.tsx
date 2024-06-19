@@ -1,154 +1,165 @@
-// root.tsx
-import React, { useContext, useEffect, useMemo } from 'react'
-import { withEmotionCache } from '@emotion/react'
-import { ChakraProvider, ColorModeWithSystem, cookieStorageManagerSSR, theme } from '@chakra-ui/react'
 import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-} from '@remix-run/react'
-import { MetaFunction, LinksFunction, LoaderFunction } from '@remix-run/cloudflare' // Depends on the runtime you choose
-
-import { ServerStyleContext, ClientStyleContext } from './context'
-import Header from './components/Header'
-import styles from './styles/styles.css?url';
-
-export const loader: LoaderFunction = async ({ request }) => {
-  return request.headers.get('cookie') ?? '';
-}
-
-export const meta: MetaFunction = () => {
-  return [
-    { charSet: 'utf-8' },
-    { title: 'Google Search Tool' },
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-  ];
-};
+	json,
+	type LinksFunction,
+	type LoaderFunctionArgs,
+	type MetaFunction,
+} from '@remix-run/cloudflare';
+import { useLoaderData } from '@remix-run/react';
+// import * as React from 'react';
+// import {
+// 	Links,
+// 	Meta,
+// 	Outlet,
+// 	Scripts,
+// 	ScrollRestoration,
+// 	isRouteErrorResponse,
+// 	json,
+// 	useLoaderData,
+// 	useRouteError,
+// } from '@remix-run/react';
+import stylesUrl from '~/styles.css?url';
+// import { type Menu, ErrorLayout, Layout } from './layout';
 
 export const links: LinksFunction = () => {
-  return [
-    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-    { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap'
-    },
-    {
-      rel: 'stylesheet',
-      href: styles
-    }
-  ]
+	return [{ rel: 'stylesheet', href: stylesUrl }];
+};
+
+export const meta: MetaFunction = () => {
+	return [
+		{ charset: 'utf-8' },
+		{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
+		{ title: 'remix-cloudlfare-template' },
+	];
+};
+
+export async function loader({ context }: LoaderFunctionArgs) {
+	const { env } = context;
+
+	const keyTeste = await env.GOOGLE_API_KEY.get('key-teste');
+	console.log(keyTeste);
+
+	// const valor = await env.GOOGLE_API_KEY.get("key-teste");
+	const valor = 'oi';
+
+	return json({
+		valor,
+		env,
+		keyTeste,
+	});
+	// const menus: Menu[] = [
+	// 	{
+	// 		title: 'Docs',
+	// 		links: [
+	// 			{
+	// 				title: 'Overview',
+	// 				to: '/',
+	// 			},
+	// 		],
+	// 	},
+	// 	{
+	// 		title: 'Useful links',
+	// 		links: [
+	// 			{
+	// 				title: 'GitHub',
+	// 				to: `https://github.com/${context.env.GITHUB_OWNER}/${context.env.GITHUB_REPO}`,
+	// 			},
+	// 			{
+	// 				title: 'Remix docs',
+	// 				to: 'https://remix.run/docs',
+	// 			},
+	// 			{
+	// 				title: 'Cloudflare docs',
+	// 				to: 'https://developers.cloudflare.com/pages',
+	// 			},
+	// 		],
+	// 	},
+	// ];
+
+	// return json({
+	// 	menus,
+	// });
 }
-
-interface DocumentProps {
-  children: React.ReactNode;
-  colorMode: ColorModeWithSystem;
-}
-
-const Document = withEmotionCache(
-  ({ children, colorMode }: DocumentProps, emotionCache) => {
-    const serverStyleData = useContext(ServerStyleContext);
-    const clientStyleData = useContext(ClientStyleContext);
-
-    // Only executed on client
-    useEffect(() => {
-      // re-link sheet container
-      emotionCache.sheet.container = document.head;
-      // re-inject tags
-      const tags = emotionCache.sheet.tags;
-      emotionCache.sheet.flush();
-      tags.forEach((tag) => {
-        // TODO
-        (emotionCache.sheet as any)._insertTag(tag);
-      });
-      // reset cache to reapply global styles
-      clientStyleData?.reset();
-    }, []);
-
-    return (
-      <html
-        lang="en"
-        {...colorMode
-        && {
-          "data-theme": colorMode,
-          "style": { colorScheme: colorMode },
-        }}
-      >
-        <head>
-          <Meta />
-          <Links />
-          {serverStyleData?.map(({ key, ids, css }) => (
-            <style
-              key={key}
-              data-emotion={`${key} ${ids.join(' ')}`}
-              dangerouslySetInnerHTML={{ __html: css }}
-            />
-          ))}
-        </head>
-        <body
-          {...colorMode && {
-            className: `chakra-ui-${colorMode}`
-          }}
-        >
-          {children}
-          <ScrollRestoration />
-          <Scripts />
-        </body>
-      </html>
-    );
-  }
-);
 
 export default function App() {
-  // TODO
-  function getColorMode(cookies: string): any {
-    const match = cookies.match(new RegExp(`(^| )${CHAKRA_COOKIE_COLOR_KEY}=([^;]+)`));
-    return match == null ? void 0 : match[2];
-  }
+	const { keyTeste } = useLoaderData<typeof loader>();
 
-  // here we can set the default color mode. If we set it to null,
-  // there's no way for us to know what is the the user's preferred theme
-  // so the client will have to figure out and maybe there'll be a flash the first time the user visits us.
-  const DEFAULT_COLOR_MODE: ColorModeWithSystem = 'system';
+	return (
+		<div>
+			{keyTeste}
+			<br />
+			Hello World !!!!!!!
+		</div>
+	);
+	// const { menus } = useLoaderData<typeof loader>();
 
-  const CHAKRA_COOKIE_COLOR_KEY = "chakra-ui-color-mode";
+	// return (
+	// 	<Document>
+	// 		<Layout menus={menus}>
+	// 			<Outlet />
+	// 		</Layout>
+	// 	</Document>
+	// );
+}
 
-  let cookies: string = useLoaderData()
+// function Document({
+// 	children,
+// 	title,
+// }: {
+// 	children: React.ReactNode;
+// 	title?: string;
+// }) {
+// 	return (
+// 		<html lang="en">
+// 			<head>
+// 				<meta charSet="utf-8" />
+// 				{title ? <title>{title}</title> : null}
+// 				<Meta />
+// 				<Links />
+// 			</head>
+// 			<body>
+// 				{children}
+// 				<ScrollRestoration />
+// 				<Scripts />
+// 			</body>
+// 		</html>
+// 	);
+// }
 
-  // the client get the cookies from the document
-  // because when we do a client routing, the loader can have stored an outdated value
-  if (typeof document !== "undefined") {
-    cookies = document.cookie;
-  }
+export function ErrorBoundary() {
+	return <h2>Error!!</h2>;
+	// const error = useRouteError();
 
-  // get and store the color mode from the cookies.
-  // It'll update the cookies if there isn't any and we have set a default value
-  // TODO
-  const colorMode: ColorModeWithSystem = useMemo(() => {
-    let color = getColorMode(cookies)
+	// // Log the error to the console
+	// console.error(error);
 
-    if (!color && DEFAULT_COLOR_MODE) {
-      cookies += ` ${CHAKRA_COOKIE_COLOR_KEY}=${DEFAULT_COLOR_MODE}`;
-      color = DEFAULT_COLOR_MODE;
-    }
+	// if (isRouteErrorResponse(error)) {
+	// 	const title = `${error.status} ${error.statusText}`;
 
-    return color;
-  }, [cookies]);
+	// 	let message;
+	// 	switch (error.status) {
+	// 		case 401:
+	// 			message =
+	// 				'Oops! Looks like you tried to visit a page that you do not have access to.';
+	// 			break;
+	// 		case 404:
+	// 			message =
+	// 				'Oops! Looks like you tried to visit a page that does not exist.';
+	// 			break;
+	// 		default:
+	// 			message = JSON.stringify(error.data, null, 2);
+	// 			break;
+	// 	}
 
-  return (
-    <Document colorMode={colorMode}>
-      <ChakraProvider
-        colorModeManager={cookieStorageManagerSSR(cookies)}
-        theme={theme}
-      >
-        <Header />
-        <div className="body-content">
-          <Outlet />
-        </div>
-      </ChakraProvider>
-    </Document>
-  )
+	// 	return (
+	// 		<Document title={title}>
+	// 			<ErrorLayout title={title} description={message} />
+	// 		</Document>
+	// 	);
+	// }
+
+	// return (
+	// 	<Document title="Error!">
+	// 		<ErrorLayout title="There was an error" description={`${error}`} />
+	// 	</Document>
+	// );
 }
