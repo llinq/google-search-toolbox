@@ -6,6 +6,7 @@ import {
 } from '@remix-run/cloudflare';
 import {
 	Links,
+	LiveReload,
 	Meta,
 	Outlet,
 	Scripts,
@@ -28,7 +29,12 @@ import {
 // } from '@remix-run/react';
 import stylesUrl from '~/styles.css?url';
 import { ErrorLayout, Layout, type Menu } from './layout';
-import { ChakraProvider, theme } from '@chakra-ui/react';
+import {
+	ChakraProvider,
+	cookieStorageManagerSSR,
+	theme,
+} from '@chakra-ui/react';
+import { useMemo } from 'react';
 // import { type Menu, ErrorLayout, Layout } from './layout';
 
 export const links: LinksFunction = () => {
@@ -43,115 +49,89 @@ export const meta: MetaFunction = () => {
 	];
 };
 
-export async function loader({ context }: LoaderFunctionArgs) {
+export async function loader({ context, request }: LoaderFunctionArgs) {
 	const { env } = context;
 
 	const key = await env.GOOGLE_API_KEY.get('key-teste');
 
 	console.log('--------------', key);
 
-	const menus: Menu[] = [
-		{
-			title: 'Docs',
-			links: [
-				{
-					title: 'Overview',
-					to: '/',
-				},
-			],
-		},
-		{
-			title: 'Useful links',
-			links: [
-				{
-					title: 'Remix docs',
-					to: 'https://remix.run/docs',
-				},
-				{
-					title: 'Cloudflare docs',
-					to: 'https://developers.cloudflare.com/pages',
-				},
-			],
-		},
-	];
-
 	return json({
-		menus,
+		cookies: request.headers.get('cookie') ?? '',
 	});
 }
 
 export default function App() {
-	const { menus } = useLoaderData<typeof loader>();
+	// root.tsx
+	// In your App function
+
+	function getColorMode(cookies: string) {
+		const match = cookies.match(
+			new RegExp(`(^| )${CHAKRA_COOKIE_COLOR_KEY}=([^;]+)`),
+		);
+		return match == null ? void 0 : match[2];
+	}
+
+	// here we can set the default color mode. If we set it to null,
+	// there's no way for us to know what is the the user's preferred theme
+	// so the client will have to figure out and maybe there'll be a flash the first time the user visits us.
+	const DEFAULT_COLOR_MODE: 'dark' | 'light' | null = 'dark';
+
+	const CHAKRA_COOKIE_COLOR_KEY = 'chakra-ui-color-mode';
+
+	let { cookies } = useLoaderData<typeof loader>();
+
+	// the client get the cookies from the document
+	// because when we do a client routing, the loader can have stored an outdated value
+	if (typeof document !== 'undefined') {
+		cookies = document.cookie;
+	}
+
+	// get and store the color mode from the cookies.
+	// It'll update the cookies if there isn't any and we have set a default value
+	let colorMode = useMemo(() => {
+		let color = getColorMode(cookies);
+
+		if (!color && DEFAULT_COLOR_MODE) {
+			cookies += ` ${CHAKRA_COOKIE_COLOR_KEY}=${DEFAULT_COLOR_MODE}`;
+			color = DEFAULT_COLOR_MODE;
+		}
+
+		return color;
+	}, [cookies]);
+
+	// Add classes to html and body and add colorModeManager to ChakraProvider
 
 	return (
-		<Document>
-			<ChakraProvider theme={theme} colorModeManager="dark">
-				<Layout menus={menus}>
-					<Outlet />
-				</Layout>
-			</ChakraProvider>
-		</Document>
-	);
-}
-
-function Document({
-	children,
-	title,
-}: {
-	children: React.ReactNode;
-	title?: string;
-}) {
-	return (
-		<html lang="en" data-theme="dark" style={{ colorScheme: 'dark' }}>
+		<html
+			lang="en"
+			{...(colorMode && {
+				'data-theme': colorMode,
+				style: { colorScheme: colorMode },
+			})}
+		>
 			<head>
-				<meta charSet="utf-8" />
-				{title ? <title>{title}</title> : null}
 				<Meta />
 				<Links />
 			</head>
-			<body className="charka-ui-dark">
-				{children}
+			<body
+				{...(colorMode && {
+					className: `chakra-ui-${colorMode}`,
+				})}
+			>
+				<ChakraProvider
+					colorModeManager={cookieStorageManagerSSR(cookies)}
+					theme={theme}
+				>
+					<Outlet />
+				</ChakraProvider>
+
 				<ScrollRestoration />
+
 				<Scripts />
+
+				<LiveReload />
 			</body>
 		</html>
-	);
-}
-
-export function ErrorBoundary() {
-	const error = useRouteError();
-
-	// Log the error to the console
-	console.error(error);
-
-	if (isRouteErrorResponse(error)) {
-		const title = `${error.status} ${error.statusText}`;
-
-		let message;
-		switch (error.status) {
-			case 401:
-				message =
-					'Oops! Looks like you tried to visit a page that you do not have access to.';
-				break;
-			case 404:
-				message =
-					'Oops! Looks like you tried to visit a page that does not exist.';
-				break;
-			default:
-				message = JSON.stringify(error.data, null, 2);
-				break;
-		}
-
-		return (
-			<Document title={title}>
-				<ErrorLayout title={title} description={message} />
-			</Document>
-		);
-	}
-
-	return (
-		<Document title="Error!">
-			<ErrorLayout title="There was an error" description={`${error}`} />
-		</Document>
 	);
 }
