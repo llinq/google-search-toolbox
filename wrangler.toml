@@ -2,7 +2,7 @@ name = "remix-cloudflare-template"
 compatibility_date = "2024-02-11"
 
 kv_namespaces = [
-  { binding = "GOOGLE_API_KEY", id = "049184f1c64242a692eef2a6b12af89a" }
+  { binding = "GOOGLE_API_KEY", id = "a02258fac15b4a4d8fd2244a57492186" }
 ]
 
 
