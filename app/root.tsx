@@ -45,7 +45,9 @@ export const meta: MetaFunction = () => {
 export async function loader({ context }: LoaderFunctionArgs) {
 	const { env } = context;
 
-	console.log(env.GOOGLE_API_KEY);
+	const key = await env.GOOGLE_API_KEY.get('key-teste');
+
+	console.log('--------------', key);
 
 	const menus: Menu[] = [
 		{
@@ -83,8 +85,6 @@ export async function loader({ context }: LoaderFunctionArgs) {
 
 export default function App() {
 	const { menus } = useLoaderData<typeof loader>();
-
-	console.log('teste');
 
 	return (
 		<Document>
