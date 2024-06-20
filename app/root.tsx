@@ -27,7 +27,8 @@ import {
 // 	useRouteError,
 // } from '@remix-run/react';
 import stylesUrl from '~/styles.css?url';
-import { ErrorLayout, Layout, Menu } from './layout';
+import { ErrorLayout, Layout, type Menu } from './layout';
+import { ChakraProvider, theme } from '@chakra-ui/react';
 // import { type Menu, ErrorLayout, Layout } from './layout';
 
 export const links: LinksFunction = () => {
@@ -63,10 +64,6 @@ export async function loader({ context }: LoaderFunctionArgs) {
 			title: 'Useful links',
 			links: [
 				{
-					title: 'GitHub',
-					to: `https://github.com/${context.env.GITHUB_OWNER}/${context.env.GITHUB_REPO}`,
-				},
-				{
 					title: 'Remix docs',
 					to: 'https://remix.run/docs',
 				},
@@ -88,9 +85,11 @@ export default function App() {
 
 	return (
 		<Document>
-			<Layout menus={menus}>
-				<Outlet />
-			</Layout>
+			<ChakraProvider theme={theme} colorModeManager="dark">
+				<Layout menus={menus}>
+					<Outlet />
+				</Layout>
+			</ChakraProvider>
 		</Document>
 	);
 }
@@ -103,14 +102,14 @@ function Document({
 	title?: string;
 }) {
 	return (
-		<html lang="en">
+		<html lang="en" data-theme="dark" style={{ colorScheme: 'dark' }}>
 			<head>
 				<meta charSet="utf-8" />
 				{title ? <title>{title}</title> : null}
 				<Meta />
 				<Links />
 			</head>
-			<body>
+			<body className="charka-ui-dark">
 				{children}
 				<ScrollRestoration />
 				<Scripts />
