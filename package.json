@@ -17,7 +17,6 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.5",
     "@netlify/remix-adapter": "^2.6.1",
-    "@netlify/vite-plugin": "^2.3.4",
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
