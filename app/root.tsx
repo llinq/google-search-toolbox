@@ -141,7 +141,7 @@ export default function App() {
   return (
     <Document colorMode={colorMode}>
       <ChakraProvider
-        colorModeManager={cookieStorageManagerSSR(cookies)}
+        // colorModeManager={cookieStorageManagerSSR(cookies)}
         theme={theme}
       >
         <Header />
