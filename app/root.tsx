@@ -103,8 +103,43 @@ const Document = withEmotionCache(
 );
 
 export default function App() {
+  // TODO
+  function getColorMode(cookies: string): any {
+    const match = cookies.match(new RegExp(`(^| )${CHAKRA_COOKIE_COLOR_KEY}=([^;]+)`));
+    return match == null ? void 0 : match[2];
+  }
+
+  // here we can set the default color mode. If we set it to null,
+  // there's no way for us to know what is the the user's preferred theme
+  // so the client will have to figure out and maybe there'll be a flash the first time the user visits us.
+  const DEFAULT_COLOR_MODE: ColorModeWithSystem = 'system';
+
+  const CHAKRA_COOKIE_COLOR_KEY = "chakra-ui-color-mode";
+
+  let cookies: string = useLoaderData()
+
+  // the client get the cookies from the document
+  // because when we do a client routing, the loader can have stored an outdated value
+  if (typeof document !== "undefined") {
+    cookies = document.cookie;
+  }
+
+  // get and store the color mode from the cookies.
+  // It'll update the cookies if there isn't any and we have set a default value
+  // TODO
+  const colorMode: ColorModeWithSystem = useMemo(() => {
+    let color = getColorMode(cookies)
+
+    if (!color && DEFAULT_COLOR_MODE) {
+      cookies += ` ${CHAKRA_COOKIE_COLOR_KEY}=${DEFAULT_COLOR_MODE}`;
+      color = DEFAULT_COLOR_MODE;
+    }
+
+    return color;
+  }, [cookies]);
+
   return (
-    <Document colorMode="dark">
+    <Document colorMode={colorMode}>
       <ChakraProvider
         // colorModeManager={cookieStorageManagerSSR(cookies)}
         theme={theme}
