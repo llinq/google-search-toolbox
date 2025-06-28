@@ -8,6 +8,8 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-// export const loader: ActionFunction = () => {
-//   return redirect('/search');
-// };
+export default function Index() {
+  return (
+    <Input variant="filled" placeholder="Outline" />
+  );
+}
