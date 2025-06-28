@@ -92,7 +92,7 @@ export async function loader({
     favorite: favoritesInCookies?.includes?.(item.link),
   }));
 
-  return json({ items: itemsFormattedWithFavorite, sites: sitesFormatted });
+  return json({ items: itemsFormattedWithFavorite, sites: sitesFormatted, key: process.env.GOOGLE_API_KEY });
 }
 
 export const clientLoader = (args: ClientLoaderFunctionArgs) => cacheClientLoader(args);
@@ -111,9 +111,11 @@ export function shouldRevalidate({
 }
 
 export default function ResultPage() {
-  const { items, sites } = useCachedLoaderData<typeof loader>();
+  const { items, sites, key } = useCachedLoaderData<typeof loader>();
 
   const sitesWithLink = sites.filter((s) => !!items.find((i) => i.link.includes(s)));
+
+  console.log("'--- key", key);
 
   return (
     <Container
