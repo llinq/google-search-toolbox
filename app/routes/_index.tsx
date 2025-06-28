@@ -8,6 +8,6 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader: ActionFunction = () => {
-  return redirect('/search');
-};
+// export const loader: ActionFunction = () => {
+//   return redirect('/search');
+// };
