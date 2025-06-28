@@ -1,6 +1,11 @@
 import { Container, AbsoluteCenter, Box, Spacer } from '@chakra-ui/react'
+import { LoaderFunctionArgs } from '@remix-run/node';
 import Logo from '~/components/Logo';
 import SearchInput from '~/components/SearchInput';
+
+export function loader({ request }: LoaderFunctionArgs) {
+  return null;
+}
 
 export default function SearchPage() {
   return (
