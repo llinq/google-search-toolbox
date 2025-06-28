@@ -117,3 +117,8 @@ export default function App() {
     </Document>
   )
 }
+
+if (typeof window !== "undefined") {
+  const hydratedPathname = window.location.pathname;
+  window.__remixContext.url = hydratedPathname;
+}
