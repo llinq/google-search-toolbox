@@ -26,8 +26,6 @@ const fetchSearch = async (params: FetchSearchParams) => {
   const qParamSplited = params.q.split(' ');
 
   const urlSearchParams = new URLSearchParams({
-    // "key": "AIzaSyB9avZpj75uJSe89QbKbZaglxKhy31pDKY",
-    // "key": "AIzaSyC6kDE2BqlmZXa-PhEe2YHjAyQwRmEZvzw",
     "cx": process.env.GOOGLE_API_CX || "",
     "key": process.env.GOOGLE_API_KEY || "",
     "q": `${params.q} ${params.sites}`,

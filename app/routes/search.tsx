@@ -1,4 +1,4 @@
-import { Container, AbsoluteCenter, Box, Spacer } from '@chakra-ui/react'
+import { Container, Box, Spacer } from '@chakra-ui/react'
 import { LoaderFunctionArgs } from '@remix-run/node';
 import Logo from '~/components/Logo';
 import SearchInput from '~/components/SearchInput';
@@ -12,14 +12,13 @@ export default function SearchPage() {
     <Container
       height="full"
       width="full"
+      marginBottom="60px"
     >
-      <AbsoluteCenter w={{ base: "full", md: "unset" }} paddingX="16px">
-        <Box w={{ base: "full", md: "576px" }}>
-          <Logo />
-          <Spacer marginBottom="44px" />
-          <SearchInput />
-        </Box>
-      </AbsoluteCenter>
+      <Box w={{ base: "full", md: "full" }}>
+        <Logo />
+        <Spacer marginBottom="44px" />
+        <SearchInput />
+      </Box>
     </Container>
   );
 }
