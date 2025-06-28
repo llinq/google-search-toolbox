@@ -28,8 +28,8 @@ const fetchSearch = async (params: FetchSearchParams) => {
   const urlSearchParams = new URLSearchParams({
     // "key": "AIzaSyB9avZpj75uJSe89QbKbZaglxKhy31pDKY",
     // "key": "AIzaSyC6kDE2BqlmZXa-PhEe2YHjAyQwRmEZvzw",
-    "key": "AIzaSyD3ygwY3BSKKr6Axi32eSXMrYNMjAVJyfM",
-    "cx": "b4644f3e113a54b01",
+    "cx": process.env.GOOGLE_API_CX || "",
+    "key": process.env.GOOGLE_API_KEY || "",
     "q": `${params.q} ${params.sites}`,
     "excludeTerms": params.excludeTerms,
     "exactTerms": `${qParamSplited[qParamSplited?.length- 1]}`,
