@@ -2,6 +2,9 @@ import {
   Heading,
   Link,
   Text,
+  HStack,
+  Button,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import FavoriteCard from "./FavoriteCard";
 import ResumeIcon from "./ResumeIcon";

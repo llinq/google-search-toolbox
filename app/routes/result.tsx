@@ -4,6 +4,7 @@ import { ClientLoaderFunctionArgs, ShouldRevalidateFunctionArgs } from "@remix-r
 import { cacheClientLoader, useCachedLoaderData } from "remix-client-cache";
 import invariant from "tiny-invariant";
 
+import mock from '../mock.json';
 import CardResult from "~/components/CardResult";
 import { userPrefs } from "~/cookies.server";
 import { GOOGLE_API_URL } from "~/constants/google-api";

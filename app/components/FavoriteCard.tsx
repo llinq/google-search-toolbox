@@ -27,10 +27,6 @@ export default function FavoriteCard({
     setIsFavorite(newFavoriteState);
   };
 
-  const handleOpenLink = (link: string) => {
-    window.open(link, '_blank');
-  };
-
   return (
     <Card
       direction={{ base: 'column', sm: 'row' }}
@@ -79,7 +75,9 @@ export default function FavoriteCard({
           <HStack justifyContent="space-between" w="full">
             <Button
               colorScheme="orange"
-              onClick={() => handleOpenLink(item.link)}
+              onClick={() => {
+                window.open(item.link, '_blank');
+              }}
             >
               Go
             </Button>

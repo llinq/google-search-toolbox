@@ -1,5 +1,5 @@
 import { ArrowBackIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { Box, Button, Flex, IconButton, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, Progress, Stack, Text, useColorMode } from "@chakra-ui/react";
 import SearchInput from "./SearchInput";
 import { Form, useLocation } from "@remix-run/react";
 import Logo from "./Logo";
