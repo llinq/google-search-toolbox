@@ -3,6 +3,7 @@ import { IconButton } from "@chakra-ui/react";
 import { useFetcher } from "@remix-run/react";
 import { action } from "~/routes/result.favorite";
 import { useEffect } from "react";
+import { trackButtonClick } from "~/utils/analytics";
 
 type FavoriteButtonProps = {
   item: any;
@@ -20,6 +21,10 @@ export default function FavoriteButton({ item, onToggleFavorite }: FavoriteButto
     }
   }, [fetcher.data, onToggleFavorite]);
 
+  const handleFavoriteClick = () => {
+    trackButtonClick('favorite', favorite ? 'remove' : 'add');
+  };
+
   return (
     <fetcher.Form action="/result/favorite" method="POST">
       <input type="hidden" name="link" value={item.link} hidden={true} />
@@ -30,6 +35,7 @@ export default function FavoriteButton({ item, onToggleFavorite }: FavoriteButto
         aria-label="Change theme"
         icon={<StarIcon fillOpacity={10} color={favorite ? 'orange' : 'gray'} />}
         type="submit"
+        onClick={handleFavoriteClick}
       />
     </fetcher.Form>
   );

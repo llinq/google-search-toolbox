@@ -21,6 +21,7 @@ import { Form, useLocation, useNavigation } from "@remix-run/react";
 import { ChangeEvent, useState } from "react";
 import DatePicker from "./DatePicker";
 import moment from "moment";
+import { trackSearch, trackButtonClick } from "~/utils/analytics";
 
 type SearchInputProps = {
   isResultPage?: boolean;
@@ -92,7 +93,15 @@ export default function SearchInput({ isResultPage }: SearchInputProps) {
 
     if (!isValid) {
       event.preventDefault();
+    } else {
+      // Track search event
+      trackSearch(queryValue, multipleSitesLength);
     }
+  };
+
+  const handleToggleSites = () => {
+    onToggleSitesTextArea();
+    trackButtonClick('toggle_sites', isResultPage ? 'result_page' : 'search_page');
   };
 
   return (
@@ -110,7 +119,7 @@ export default function SearchInput({ isResultPage }: SearchInputProps) {
                 size="sm"
                 aria-label="Open multiple sites textarea"
                 icon={isOpenSitesTextarea ? <ArrowUpIcon /> : <ArrowDownIcon />}
-                onClick={onToggleSitesTextArea}
+                onClick={handleToggleSites}
                 isLoading={isResultPage && searching}
               />
             </InputRightElement>
