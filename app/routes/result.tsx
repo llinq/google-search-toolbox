@@ -9,7 +9,6 @@ import CardResult from "~/components/CardResult";
 import { userPrefs } from "~/cookies.server";
 import { GOOGLE_API_URL } from "~/constants/google-api";
 import { formatSites } from "~/utils/formatSites";
-import mock from '~/mock.json';
 
 export type FetchSearchParams = {
   after: string | null;
@@ -120,7 +119,6 @@ export default function ResultPage() {
 
   return (
     <Container
-      minHeight="100vh"
       marginBottom="20px"
       maxWidth="full"
       w="full"

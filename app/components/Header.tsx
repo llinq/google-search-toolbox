@@ -1,8 +1,7 @@
 import { ArrowBackIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { Box, Button, Flex, IconButton, Progress, Stack, Text, useColorMode } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, useColorMode } from "@chakra-ui/react";
 import SearchInput from "./SearchInput";
 import { Form, useLocation } from "@remix-run/react";
-import Logo from "./Logo";
 
 export default function Header() {
   const { colorMode, toggleColorMode } = useColorMode()
@@ -21,7 +20,7 @@ export default function Header() {
         gap={{ base: "2rem" }}
       >
         <Form action="/search">
-          <Box display={{ base: "block", sm: "none" }}>
+          <Box>
             {isResultPage && (
               <IconButton
                 aria-label="Back to home"
@@ -29,11 +28,6 @@ export default function Header() {
                 type="submit"
               />
             )}
-          </Box>
-          <Box display={{ base: "none", sm: "block" }}>
-            <Button type="submit" variant="ghost" width="80px">
-              <Logo size="xs" as="span" fontSize="10px" lineHeight="12px" />
-            </Button>
           </Box>
         </Form>
         {isResultPage && (

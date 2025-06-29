@@ -1,11 +1,19 @@
 html,
 body {
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
   display: flex;
   flex-direction: column;
+}
+
+header {
+  position: sticky;
+  z-index: 2;
+  top: 0px;
+  /* background-color: var(--chakra-colors-chakra-body-bg); */
+  backdrop-filter: blur(10px);
 }
 
 .body-content {
