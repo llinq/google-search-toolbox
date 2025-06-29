@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-const GA_TRACKING_ID = 'G-YBNE4SR1N9';
+const GA_TRACKING_ID = process.env.ANALYTICS_KEY;
 
 // Page view tracking
 export const trackPageView = (url: string) => {
