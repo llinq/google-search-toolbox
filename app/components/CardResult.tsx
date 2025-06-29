@@ -5,7 +5,6 @@ import {
 } from "@chakra-ui/react";
 import FavoriteCard from "./FavoriteCard";
 import ResumeIcon from "./ResumeIcon";
-import { trackCustomEvent } from "~/utils/analytics";
 
 type Result = {
   displayLink: string;
@@ -28,15 +27,6 @@ type CardResultProps = {
 };
 
 export default function CardResult({ item }: CardResultProps) {
-  const handleResultClick = () => {
-    trackCustomEvent('click_search_result', {
-      result_title: item.title,
-      result_url: item.link,
-      result_domain: item.displayLink,
-      is_favorite: item.favorite || false
-    });
-  };
-
   return (
     <FavoriteCard item={item}>
       <Link
@@ -46,7 +36,6 @@ export default function CardResult({ item }: CardResultProps) {
         textDecoration="none"
         _visited={{ color: 'purple.300' }}
         _hover={{ textDecoration: 'underline' }}
-        onClick={handleResultClick}
       >
         <Heading
           size="md"

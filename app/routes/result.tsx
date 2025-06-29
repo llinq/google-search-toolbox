@@ -3,14 +3,12 @@ import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { ClientLoaderFunctionArgs, ShouldRevalidateFunctionArgs } from "@remix-run/react";
 import { cacheClientLoader, useCachedLoaderData } from "remix-client-cache";
 import invariant from "tiny-invariant";
-import { useEffect } from "react";
 
 import mock from '../mock.json';
 import CardResult from "~/components/CardResult";
 import { userPrefs } from "~/cookies.server";
 import { GOOGLE_API_URL } from "~/constants/google-api";
 import { formatSites } from "~/utils/formatSites";
-import { trackCustomEvent } from "~/utils/analytics";
 
 export type FetchSearchParams = {
   after: string | null;
@@ -118,15 +116,6 @@ export default function ResultPage() {
   const { items, sites } = useCachedLoaderData<typeof loader>();
 
   const sitesWithLink = sites.filter((s) => !!items.find((i) => i.link.includes(s)));
-
-  // Track results page view with search data
-  useEffect(() => {
-    trackCustomEvent('view_search_results', {
-      results_count: items.length,
-      sites_count: sites.length,
-      has_filters: sites.length > 0
-    });
-  }, [items.length, sites.length]);
 
   return (
     <Container
