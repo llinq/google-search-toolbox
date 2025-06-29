@@ -8,6 +8,7 @@ import CardResult from "~/components/CardResult";
 import { userPrefs } from "~/cookies.server";
 import { GOOGLE_API_URL } from "~/constants/google-api";
 import { formatSites } from "~/utils/formatSites";
+import mock from '~/mock.json';
 
 export type FetchSearchParams = {
   after: string | null;
@@ -18,7 +19,7 @@ export type FetchSearchParams = {
 };
 
 const fetchSearch = async (params: FetchSearchParams) => {
-  invariant(params.q, "Search parameter is required") 
+  invariant(params.q, "Search parameter is required")
 
   const fetchUrl = GOOGLE_API_URL;
 
@@ -29,7 +30,7 @@ const fetchSearch = async (params: FetchSearchParams) => {
     "key": process.env.GOOGLE_API_KEY || "",
     "q": `${params.q} ${params.sites}`,
     "excludeTerms": params.excludeTerms,
-    "exactTerms": `${qParamSplited[qParamSplited?.length- 1]}`,
+    "exactTerms": `${qParamSplited[qParamSplited?.length - 1]}`,
     "start": params.start.toString(),
   });
 
@@ -37,6 +38,8 @@ const fetchSearch = async (params: FetchSearchParams) => {
 
   const res = await fetch(url);
   const response = await res.json();
+
+  console.log('response', response)
 
   return response;
 };
@@ -54,36 +57,37 @@ export async function loader({
 
   const url = new URL(request.url);
   const qParam = url.searchParams.get("q");
-  const sitesParam = url.searchParams.get("sites");
   const afterParam = url.searchParams.get("after");
   const excludeTerms = url.searchParams.get("excludeTerms");
-
+  const sitesParam = url.searchParams.get("sites");
   const sitesFormatted = formatSites(sitesParam ?? "");
-  const sitesQuery = sitesFormatted.map((siteFormatted) => {
-    return `site:${siteFormatted}`;
-  });
-  const afterQuery = afterParam ? `after:${afterParam}` : "";
 
-  // const items = mock;
+  let items = [];
 
-  const items = [];
+  if (process.env.LOCAL) {
+    items = mock;
+  } else {
+    const sitesQuery = sitesFormatted.map((siteFormatted) => {
+      return `site:${siteFormatted}`;
+    });
+    const afterQuery = afterParam ? `after:${afterParam}` : "";
 
-  const params: FetchSearchParams = {
-    after: afterQuery,
-    q: qParam,
-    sites: sitesQuery.join(" OR "),
-    start: 0,
-    excludeTerms: excludeTerms ?? ""
-  };
+    const params: FetchSearchParams = {
+      after: afterQuery,
+      q: qParam,
+      sites: sitesQuery.join(" OR "),
+      start: 0,
+      excludeTerms: excludeTerms ?? ""
+    };
 
-  const response = await fetchSearch({ ...params, start: 0 });
-  items.push(...response.items);
+    const response = await fetchSearch({ ...params, start: 0 });
+    items.push(...response.items);
 
-
-  // for (let start = 0; start <= 90; start += 10) {
-  //   const response = await fetchSearch({ ...params, start });
-  //   items.push(...response.items);
-  // }
+    // for (let start = 0; start <= 90; start += 10) {
+    //   const response = await fetchSearch({ ...params, start });
+    //   items.push(...response.items);
+    // }
+  }
 
   const itemsFormattedWithFavorite = items.map((item) => ({
     ...item,
