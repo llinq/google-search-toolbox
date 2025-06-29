@@ -1,5 +1,6 @@
 import { ActionFunctionArgs, json } from "@remix-run/node";
 import { userPrefs } from "~/cookies.server";
+import { monitorFavoriteAction } from "~/utils/monitoring";
 
 export const action = async ({
   request,
@@ -9,11 +10,13 @@ export const action = async ({
 
   const formData = await request.formData();
   const values = Object.fromEntries(formData);
-  const link = values.link;
+  const link = values.link.toString();
 
   const index = cookie.favorites.indexOf(link);
 
   const added = (index === -1);
+
+  monitorFavoriteAction(added ? 'add' : 'remove', { link });
 
   if (added) {
     cookie.favorites.push(link);

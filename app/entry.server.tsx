@@ -4,6 +4,7 @@ import { CacheProvider } from '@emotion/react'
 import createEmotionServer from '@emotion/server/create-instance'
 import { RemixServer } from '@remix-run/react'
 import type { EntryContext } from '@remix-run/node' // Depends on the runtime you choose
+import { initializeMonitoring } from "./utils/monitoring"
 
 import { ServerStyleContext } from './context'
 import createEmotionCache from './createEmotionCache'
@@ -17,6 +18,9 @@ function getColorMode(cookies: string): string {
   // Default to 'system' if no color mode is found
   return color || 'system';
 }
+
+// Inicializar sistema de monitoramento
+initializeMonitoring();
 
 export default function handleRequest(
   request: Request,
