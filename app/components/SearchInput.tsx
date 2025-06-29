@@ -23,11 +23,10 @@ import DatePicker from "./DatePicker";
 import moment from "moment";
 
 type SearchInputProps = {
-  hideButton?: boolean;
   isResultPage?: boolean;
 };
 
-export default function SearchInput({ hideButton, isResultPage }: SearchInputProps) {
+export default function SearchInput({ isResultPage }: SearchInputProps) {
   const location = useLocation();
 
   const searchParams = new URLSearchParams(location.search);
@@ -47,6 +46,7 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
   const [sitesValue, setSitesValue] = useState(sitesParam ?? "");
   const [excludeTermsValue, setExcludeTermsValue] = useState(excludeTermsParam ?? "");
   const [date, setDate] = useState<Date | undefined>(afterParam ? moment(afterParam).toDate() : undefined);
+  const [queryError, setQueryError] = useState("");
 
   const handleMultipleSitesChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const inputValue = event.target.value;
@@ -65,35 +65,67 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
   const handleQueryChange = (event: ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
     setQueryValue(inputValue);
+
+    const isValid = handleValidateQuery(inputValue);
+
+    if (inputValue.trim() && isValid) {
+      setQueryError("");
+    }
+  };
+
+  const handleValidateQuery = (value: string): boolean => {
+    if (!value || !value.trim()) {
+      setQueryError("Search term is required");
+      return false;
+    }
+
+    if (value.trim().length < 2) {
+      setQueryError("Search term must be at least 2 characters long");
+      return false;
+    }
+
+    return true;
+  }
+
+  const handleSubmit = (event: React.FormEvent) => {
+    const isValid = handleValidateQuery(queryValue);
+
+    if (!isValid) {
+      event.preventDefault();
+    }
   };
 
   return (
-    <Form role="search" id="search-form" action="/result">
+    <Form role="search" id="search-form" action="/result" onSubmit={handleSubmit}>
       <VStack gap="16px">
-        <InputGroup variant="outline">
-          <InputLeftElement pointerEvents='none'>
-            <SearchIcon color='gray.300' />
-          </InputLeftElement>
-          <InputRightElement>
-            <IconButton
-              isRound={true}
-              variant="ghost"
-              size="sm"
-              aria-label="Open multiple sites textarea"
-              icon={isOpenSitesTextarea ? <ArrowUpIcon /> : <ArrowDownIcon />}
-              onClick={onToggleSitesTextArea}
-              isLoading={isResultPage && searching}
+        <FormControl isInvalid={!!queryError}>
+          <InputGroup variant="outline">
+            <InputLeftElement pointerEvents='none'>
+              <SearchIcon color='gray.300' />
+            </InputLeftElement>
+            <InputRightElement>
+              <IconButton
+                isRound={true}
+                variant="ghost"
+                size="sm"
+                aria-label="Open multiple sites textarea"
+                icon={isOpenSitesTextarea ? <ArrowUpIcon /> : <ArrowDownIcon />}
+                onClick={onToggleSitesTextArea}
+                isLoading={isResultPage && searching}
+              />
+            </InputRightElement>
+            <Input
+              autoComplete="off"
+              placeholder="Search here..."
+              w="full"
+              id="q"
+              name="q"
+              value={queryValue}
+              onChange={handleQueryChange}
             />
-          </InputRightElement>
-          <Input
-            placeholder="Search here..."
-            w="full"
-            id="q"
-            name="q"
-            value={queryValue}
-            onChange={handleQueryChange}
-          />
-        </InputGroup>
+          </InputGroup>
+          {queryError && <FormErrorMessage>{queryError}</FormErrorMessage>}
+        </FormControl>
 
         <Box as={Collapse} in={isOpenSitesTextarea} w="full" animateOpacity>
           <HStack alignItems="center" marginBottom="16px" marginTop="8px">
@@ -117,9 +149,9 @@ export default function SearchInput({ hideButton, isResultPage }: SearchInputPro
               onChange={handleMultipleSitesChange}
               placeholder="Split sites with break lines, e.g.:
 
-www.site1.com
-www.site2.com
-www.site3.com
+site1.com
+site2.com
+site3.com
             "
             />
             {multipleSitesLength <= 25 ? (
@@ -146,7 +178,6 @@ www.site3.com
           </FormControl>
         </Box>
 
-        {!hideButton && (
           <Button
             variant="outline"
             size="md"
@@ -154,10 +185,10 @@ www.site3.com
             colorScheme="blue"
             type="submit"
             isLoading={searching}
+            isDisabled={!!queryError}
           >
             Search
           </Button>
-        )}
       </VStack>
     </Form >
   );

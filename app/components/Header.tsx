@@ -1,4 +1,4 @@
-import { ChatIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Box, Button, Flex, IconButton, Progress, Stack, Text, useColorMode } from "@chakra-ui/react";
 import SearchInput from "./SearchInput";
 import { Form, useLocation } from "@remix-run/react";
@@ -19,17 +19,16 @@ export default function Header() {
         justifyContent="space-between"
         padding="16px"
         gap={{ base: "2rem" }}
-      // borderBottom="1px solid"
-      // borderBottomColor="orange.600"
-      // bgGradient="linear(orange.600, blue.400)"
       >
         <Form action="/search">
           <Box display={{ base: "block", sm: "none" }}>
-            <IconButton
-              aria-label="Back to home"
-              icon={<ChatIcon />}
-              type="submit"
-            />
+            {isResultPage && (
+              <IconButton
+                aria-label="Back to home"
+                icon={<ArrowBackIcon />}
+                type="submit"
+              />
+            )}
           </Box>
           <Box display={{ base: "none", sm: "block" }}>
             <Button type="submit" variant="ghost" width="80px">
@@ -53,12 +52,12 @@ export default function Header() {
           />
         </div>
       </Flex>
-      <Stack spacing={1} margin="24px">
-        <Progress  colorScheme="yellow" value={20} size="xs" />
+      {/* <Stack spacing={1} margin="24px">
+        <Progress colorScheme="yellow" value={20} size="xs" />
         <Text as="i">
           Quota limit
         </Text>
-      </Stack>
+      </Stack> */}
     </header>
   )
 }

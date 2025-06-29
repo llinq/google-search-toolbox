@@ -8,6 +8,16 @@ import type { EntryContext } from '@remix-run/node' // Depends on the runtime yo
 import { ServerStyleContext } from './context'
 import createEmotionCache from './createEmotionCache'
 
+// Color mode detection function
+function getColorMode(cookies: string): string {
+  const CHAKRA_COOKIE_COLOR_KEY = "chakra-ui-color-mode";
+  const match = cookies.match(new RegExp(`(^| )${CHAKRA_COOKIE_COLOR_KEY}=([^;]+)`));
+  const color = match ? match[2] : undefined;
+  
+  // Default to 'system' if no color mode is found
+  return color || 'system';
+}
+
 export default function handleRequest(
   request: Request,
   responseStatusCode: number,
@@ -16,6 +26,10 @@ export default function handleRequest(
 ) {
   const cache = createEmotionCache()
   const { extractCriticalToChunks } = createEmotionServer(cache)
+
+  // Get cookies from request headers
+  const cookies = request.headers.get('cookie') ?? '';
+  const colorMode = getColorMode(cookies);
 
   const html = renderToString(
     <ServerStyleContext.Provider value={null}>
@@ -35,9 +49,18 @@ export default function handleRequest(
     </ServerStyleContext.Provider>,
   )
 
+  // Add color mode attributes to the HTML to prevent flash
+  const htmlWithColorMode = markup.replace(
+    '<html lang="en">',
+    `<html lang="en" data-theme="${colorMode}" style="color-scheme: ${colorMode};">`
+  ).replace(
+    '<body>',
+    `<body class="chakra-ui-${colorMode}">`
+  );
+
   responseHeaders.set('Content-Type', 'text/html')
 
-  return new Response(`<!DOCTYPE html>${markup}`, {
+  return new Response(`<!DOCTYPE html>${htmlWithColorMode}`, {
     status: responseStatusCode,
     headers: responseHeaders,
   })

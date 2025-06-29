@@ -2,15 +2,23 @@ import { StarIcon } from "@chakra-ui/icons";
 import { IconButton } from "@chakra-ui/react";
 import { useFetcher } from "@remix-run/react";
 import { action } from "~/routes/result.favorite";
+import { useEffect } from "react";
 
 type FavoriteButtonProps = {
   item: any;
+  onToggleFavorite?: (newFavoriteState: boolean) => void;
 };
 
-export default function FavoriteButton({ item }: FavoriteButtonProps) {
+export default function FavoriteButton({ item, onToggleFavorite }: FavoriteButtonProps) {
   const fetcher = useFetcher<typeof action>();
 
   const favorite = fetcher.data?.favorite ?? item.favorite;
+
+  useEffect(() => {
+    if (fetcher.data && onToggleFavorite) {
+      onToggleFavorite(fetcher.data.favorite);
+    }
+  }, [fetcher.data, onToggleFavorite]);
 
   return (
     <fetcher.Form action="/result/favorite" method="POST">

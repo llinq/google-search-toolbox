@@ -65,20 +65,21 @@ export async function loader({
   });
   const afterQuery = afterParam ? `after:${afterParam}` : "";
 
-  // const items = mock;
+  const items = mock;
 
-  const items = [];
+  // const items = [];
 
-  const params: FetchSearchParams = {
-    after: afterQuery,
-    q: qParam,
-    sites: sitesQuery.join(" OR "),
-    start: 0,
-    excludeTerms: excludeTerms ?? ""
-  };
+  // const params: FetchSearchParams = {
+  //   after: afterQuery,
+  //   q: qParam,
+  //   sites: sitesQuery.join(" OR "),
+  //   start: 0,
+  //   excludeTerms: excludeTerms ?? ""
+  // };
 
-  const response = await fetchSearch({ ...params, start: 0 });
-  items.push(...response.items);
+  // const response = await fetchSearch({ ...params, start: 0 });
+  // items.push(...response.items);
+
 
   // for (let start = 0; start <= 90; start += 10) {
   //   const response = await fetchSearch({ ...params, start });
@@ -121,7 +122,7 @@ export default function ResultPage() {
       w="full"
     >
       <Heading marginBottom="24px">
-        Result Page!!
+        Results
       </Heading>
       {sites && sites.length > 0 ? (
         <Tabs variant='enclosed'>
